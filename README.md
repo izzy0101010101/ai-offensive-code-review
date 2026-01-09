@@ -130,6 +130,19 @@ Findings use these condition types (not severity labels):
 
 ---
 
+## Permissions
+
+This repo includes pre-configured permissions in `.claude/settings.local.json` so the pipeline runs without constant approval prompts.
+
+Included permissions:
+- All pipeline skills (stage1-4, offensive-review, generate-report)
+- `python3` for report generation
+- `git clone` for cloning target repos
+
+To customize, edit `.claude/settings.local.json` or see the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code).
+
+---
+
 ## Philosophy
 
 - **Hypotheses, not verdicts** - AI identifies conditions, humans validate
