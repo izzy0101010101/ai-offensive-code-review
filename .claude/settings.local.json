@@ -9,7 +9,8 @@
       "Skill(generate-report)",
       "Bash(python3:*)",
       "Bash(git clone:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(mkdir:*)"
     ]
   }
 }
