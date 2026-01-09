@@ -1,0 +1,22 @@
+# AI Artifacts (regenerated each run)
+ai_artifacts/
+
+# Test targets (cloned repos)
+test-targets/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
