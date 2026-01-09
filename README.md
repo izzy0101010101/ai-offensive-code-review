@@ -157,7 +157,7 @@ Included permissions:
 - `python3` for report generation
 - `git clone` for cloning target repos
 
-To customize, edit `.claude/settings.local.json` or see the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code).
+To customize, edit `.claude/settings.local.json` or see the [Claude Code documentation](https://github.com/anthropics/claude-code).
 
 ---
 
@@ -173,3 +173,9 @@ To customize, edit `.claude/settings.local.json` or see the [Claude Code documen
 ## License
 
 MIT
+
+---
+
+## Disclaimer
+
+For authorized security testing and educational purposes only. Do not use on systems without permission. The authors are not responsible for misuse.
