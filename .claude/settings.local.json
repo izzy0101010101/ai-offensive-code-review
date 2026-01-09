@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(offensive-review)",
+      "Skill(stage1)",
+      "Skill(stage2)",
+      "Skill(stage3)",
+      "Skill(stage4)",
+      "Skill(generate-report)",
+      "Bash(python3:*)",
+      "Bash(git clone:*)"
+    ]
+  }
+}
