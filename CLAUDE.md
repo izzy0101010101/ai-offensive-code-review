@@ -45,6 +45,8 @@ ai_artifacts/
 **entry_points.csv:**
 `svc_name,entry_type,route,method,handler_file,handler_func,called_funcs,param_sources`
 
+Entry types: HTTP, QUEUE, SDK, WEBSOCKET, GRPC, CRON, FILE, STDIN, EVENT, IPC
+
 **state_and_links.csv:**
 `svc_name,artifact_type,identifier,op,src_file,src_func,target_file,target_func,data_elements`
 

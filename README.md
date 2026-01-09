@@ -3,7 +3,7 @@
 <h1 align="center">AI Offensive Code Review Pipeline</h1>
 
 <p align="center">
-Automated security code review powered by Claude. Point it at a codebase and get:
+Attack surface mapping for security testers. Point it at a codebase and get:
 </p>
 
 <p align="center">
@@ -135,12 +135,26 @@ Findings use these condition types (not severity labels):
 |------|-------------|
 | `MISSING_VALIDATION` | Input used without validation |
 | `TRUST_BOUNDARY_CROSSING` | Data crosses trust boundaries |
-| `DANGEROUS_PRIMITIVE` | Use of inherently risky functions |
-| `STATE_MUTATION` | State change worth examining |
+| `DANGEROUS_PRIMITIVE` | eval(), SQL builders, deserializers |
+| `STATE_MUTATION` | DB writes, cache, session changes |
 | `CONFIG_DEPENDENT` | Behavior depends on configuration |
 | `EXTERNAL_CALL_INPUT` | User input in external calls |
 | `FILE_INTERACTION` | File system operations |
-| `SUBPROCESS_EXEC` | Process/command execution |
+| `SUBPROCESS_EXEC` | Shell commands, process spawning |
+| `AUTH_BYPASS` | Authentication logic flaws |
+| `AUTHZ_BYPASS` | Missing permission checks, IDOR |
+| `SESSION_HANDLING` | Weak session management, fixation |
+| `SSRF` | Server fetches user-supplied URL |
+| `OPEN_REDIRECT` | Redirect to user-supplied URL |
+| `PATH_TRAVERSAL` | Directory traversal (../) |
+| `TEMPLATE_INJECTION` | User input in template engines |
+| `XML_PARSING` | XXE in XML parsers |
+| `MASS_ASSIGNMENT` | Object binding without allowlist |
+| `HARDCODED_SECRET` | API keys, passwords in code |
+| `WEAK_CRYPTO` | MD5, SHA1, weak keys, ECB mode |
+| `SENSITIVE_LOGGING` | PII, credentials in logs |
+| `INFO_DISCLOSURE` | Stack traces, debug info exposed |
+| `RACE_CONDITION` | TOCTOU, concurrent state access |
 
 ---
 
@@ -166,10 +180,13 @@ To customize, edit `.claude/settings.local.json` or see the [Claude Code documen
 
 ## Philosophy
 
+- **Mapper, not scanner** - Shows you where to look, doesn't claim exploitability
 - **Leads, not verdicts** - AI identifies conditions, humans validate
 - **No security theater** - No "CRITICAL" labels or impact scores
 - **Evidence-based** - Every finding links to specific code locations
 - **Transparent** - CSV outputs are auditable, not black-box
+
+This is a reconnaissance tool. You still do the actual security testing.
 
 ---
 
