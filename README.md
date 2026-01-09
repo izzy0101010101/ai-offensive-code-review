@@ -93,6 +93,19 @@ ai_artifacts/
 
 ---
 
+## Project Structure
+
+```
+.claude/skills/       # Pipeline commands (stage1-4, offensive-review, generate-report)
+scripts/
+├── generate_report.py   # Builds HTML report from CSVs
+├── validate-csv.sh      # Validates CSV structure
+└── init-review.sh       # Creates ai_artifacts directories
+ai_artifacts/         # Output directory (gitignored)
+```
+
+---
+
 ## Condition Types
 
 Findings use these condition types (not severity labels):
