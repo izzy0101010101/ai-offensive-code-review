@@ -18,7 +18,7 @@ Attack surface mapping for security testers. Point it at a codebase and get:
 
 ## Why This Exists
 
-I believe in manual security testing - AI should help map what's there so nothing gets missed. Traditional scanners give you severity labels and verdicts without evidence, flooding you with noise to triage. This pipeline takes a different approach: map the attack surface, trace data flows, and identify conditions worth looking at - then give you file paths, line numbers, and preconditions to validate yourself. Leads, not verdicts. You spend time on real issues instead of dismissing false ones.
+Traditional scanners flood you with severity labels and verdicts without evidence. This maps the attack surface, traces data flows, and surfaces conditions worth investigating. You get file paths, line numbers, and preconditions to validate yourself.
 
 ---
 
