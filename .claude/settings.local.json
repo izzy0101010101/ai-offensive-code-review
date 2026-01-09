@@ -14,7 +14,10 @@
       "Bash(mkdir:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)"
     ]
   }
 }

@@ -434,7 +434,7 @@ pre {{
     <h2>Sections</h2>
     <ul>
         <li><a href="#entries">Entry Points</a></li>
-        <li><a href="#findings">Hypotheses</a></li>
+        <li><a href="#findings">Leads</a></li>
         <li><a href="#dataflow">Data Flows</a></li>
         <li><a href="#deps">Dependencies</a></li>
     </ul>
@@ -465,7 +465,7 @@ pre {{
     <div class="stat"><div class="stat-num">{len(entries)}</div><div class="stat-label">Entry Points</div></div>
     <div class="stat"><div class="stat-num">{http_count}</div><div class="stat-label">HTTP Routes</div></div>
     <div class="stat"><div class="stat-num">{queue_count}</div><div class="stat-label">Queue Consumers</div></div>
-    <div class="stat"><div class="stat-num">{len(findings)}</div><div class="stat-label">Hypotheses</div></div>
+    <div class="stat"><div class="stat-num">{len(findings)}</div><div class="stat-label">Leads</div></div>
 </div>
 
 <h3>What to Look at First</h3>
@@ -556,7 +556,7 @@ pre {{
                 html_parts.append('</ul>')
 
             if related:
-                html_parts.append('<p><strong>Related hypotheses:</strong></p><ul>')
+                html_parts.append('<p><strong>Related leads:</strong></p><ul>')
                 for f in related:
                     html_parts.append(f'<li><a href="#finding-{slugify(f.get("id", ""))}">{esc(f.get("id", ""))}</a> - {esc(f.get("condition_type", ""))}</li>')
                 html_parts.append('</ul>')
@@ -573,10 +573,10 @@ pre {{
 
     html_parts.append('</section>')
 
-    # Hypotheses Catalog
+    # Leads Catalog
     html_parts.append('''
 <section id="findings">
-<h2>Hypotheses Catalog</h2>
+<h2>Leads</h2>
 <p>All items require human validation. Verify condition exists, test reachability, confirm preconditions can be met.</p>
 ''')
 
@@ -669,7 +669,7 @@ pre {{
     # Footer and scripts
     html_parts.append('''
 <footer style="margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:#8b949e;font-size:0.8rem">
-<p>All findings are hypotheses requiring human validation. No severity assigned by design.</p>
+<p>All findings are leads requiring human validation. No severity assigned by design.</p>
 </footer>
 
 </main>

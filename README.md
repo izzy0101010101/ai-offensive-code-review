@@ -18,7 +18,7 @@ Automated security code review powered by Claude. Point it at a codebase and get
 
 ## Why This Exists
 
-I believe in manual security testing - AI should help map what's there so nothing gets missed. Traditional scanners give you severity labels and verdicts without evidence, flooding you with noise to triage. This pipeline takes a different approach: map the attack surface, trace data flows, and identify conditions worth looking at - then give you file paths, line numbers, and preconditions to validate yourself. Hypotheses, not verdicts. You spend time on real issues instead of dismissing false ones.
+I believe in manual security testing - AI should help map what's there so nothing gets missed. Traditional scanners give you severity labels and verdicts without evidence, flooding you with noise to triage. This pipeline takes a different approach: map the attack surface, trace data flows, and identify conditions worth looking at - then give you file paths, line numbers, and preconditions to validate yourself. Leads, not verdicts. You spend time on real issues instead of dismissing false ones.
 
 ---
 
@@ -70,7 +70,7 @@ That's it. Wait for the pipeline to complete and open `ai_artifacts/report.html`
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
 │   Stage 0   │───▶│   Stage 1   │───▶│   Stage 2   │───▶│   Stage 3   │───▶│   Stage 4   │
 │  Overview   │    │  Services   │    │   Entry     │    │   State &   │    │  Findings   │
-│ & Diagram   │    │   & Deps    │    │   Points    │    │   Flows     │    │(Hypotheses) │
+│ & Diagram   │    │   & Deps    │    │   Points    │    │   Flows     │    │  (Leads)    │
 └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
                                                │
                                                ▼
@@ -166,16 +166,10 @@ To customize, edit `.claude/settings.local.json` or see the [Claude Code documen
 
 ## Philosophy
 
-- **Hypotheses, not verdicts** - AI identifies conditions, humans validate
+- **Leads, not verdicts** - AI identifies conditions, humans validate
 - **No security theater** - No "CRITICAL" labels or impact scores
 - **Evidence-based** - Every finding links to specific code locations
 - **Transparent** - CSV outputs are auditable, not black-box
-
----
-
-## License
-
-MIT
 
 ---
 
