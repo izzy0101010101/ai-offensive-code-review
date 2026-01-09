@@ -8,7 +8,11 @@
       "Skill(stage4)",
       "Skill(generate-report)",
       "Bash(python3:*)",
-      "Bash(git clone:*)"
+      "Bash(git clone:*)",
+      "Bash(wc:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)"
     ]
   }
 }

@@ -25,6 +25,28 @@ Automated security code review powered by Claude. Point it at a codebase and get
 
 ---
 
+## Supported Projects
+
+Works on any codebase Claude can read:
+
+| Language | Status |
+|----------|--------|
+| JavaScript/TypeScript | Tested |
+| Python | Tested |
+| Go | Tested |
+| Java | Tested |
+| C#, Ruby, PHP | Supported |
+| Rust, C/C++, Kotlin, Swift | Supported |
+
+**Best suited for:**
+- Web applications (REST APIs, GraphQL, web servers)
+- Microservices architectures
+- Backend services with HTTP/queue entry points
+
+**Token usage:** This pipeline reads a lot of code. Expect significant token usage on large codebases. For cost control, run on specific subdirectories or use individual stages instead of the full pipeline.
+
+---
+
 ## Quick Start
 
 ```bash
