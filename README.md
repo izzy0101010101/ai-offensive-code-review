@@ -10,10 +10,15 @@ Automated security code review powered by Claude. Point it at a codebase and get
 <b>Service inventory</b> · <b>Attack surface map</b> · <b>Data flow analysis</b> · <b>Security conditions</b>
 </p>
 
-
 <p align="center">
   <img src="screenshots/report.png" width="950px" style="border: 1px solid #30363d; border-radius: 8px;" />
 </p>
+
+---
+
+## Why This Exists
+
+I still believe in manual security testing - but AI can help map what's there so nothing gets missed. Traditional scanners flood you with false positives, severity labels that mean nothing, and "CRITICAL" alerts that waste hours of manual triage. They give you verdicts without evidence, confidence without context, and noise without signal. This pipeline takes a different approach: it maps your entire attack surface, traces data flows, and identifies security-relevant conditions - then hands you evidence to validate yourself. No severity theater, no black-box verdicts, just hypotheses backed by file paths, line numbers, and preconditions. You spend time testing real issues instead of dismissing false ones.
 
 ---
 
