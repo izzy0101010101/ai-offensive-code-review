@@ -67,16 +67,16 @@ That's it. Wait for the pipeline to complete and open `ai_artifacts/report.html`
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Stage 1   │───▶│   Stage 2   │───▶│   Stage 3   │───▶│   Stage 4   │
-│  Services   │    │   Entry     │    │   State &   │    │  Findings   │
-│    & Deps   │    │   Points    │    │   Flows     │    │(Hypotheses) │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  report.html    │
-                    └─────────────────┘
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Stage 0   │───▶│   Stage 1   │───▶│   Stage 2   │───▶│   Stage 3   │───▶│   Stage 4   │
+│  Overview   │    │  Services   │    │   Entry     │    │   State &   │    │  Findings   │
+│ & Diagram   │    │   & Deps    │    │   Points    │    │   Flows     │    │(Hypotheses) │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+                                               │
+                                               ▼
+                                     ┌─────────────────┐
+                                     │  report.html    │
+                                     └─────────────────┘
 ```
 
 ---
@@ -85,6 +85,7 @@ That's it. Wait for the pipeline to complete and open `ai_artifacts/report.html`
 
 | Command | What it does |
 |---------|--------------|
+| `run /stage0` | Application overview and architecture diagram |
 | `run /stage1` | Inventory services and dependencies |
 | `run /stage2` | Extract entry points (HTTP, queues, SDK) |
 | `run /stage3` | Map state mutations and cross-service calls |
@@ -97,6 +98,8 @@ That's it. Wait for the pipeline to complete and open `ai_artifacts/report.html`
 
 ```
 ai_artifacts/
+├── stage0/
+│   └── overview.md         # Application overview & architecture
 ├── stage1/
 │   ├── services.csv        # Service inventory with path aliases
 │   └── dependencies.csv    # External dependencies

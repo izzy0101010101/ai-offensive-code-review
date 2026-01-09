@@ -2,6 +2,7 @@
   "permissions": {
     "allow": [
       "Skill(offensive-review)",
+      "Skill(stage0)",
       "Skill(stage1)",
       "Skill(stage2)",
       "Skill(stage3)",

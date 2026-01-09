@@ -7,13 +7,14 @@ run /offensive-review /path/to/target/repo
 
 Or run stages individually:
 ```
-run /stage1 → run /stage2 → run /stage3 → run /stage4 → run /generate-report
+run /stage0 → run /stage1 → run /stage2 → run /stage3 → run /stage4 → run /generate-report
 ```
 
 ## Commands
 
 | Command | Model | Description |
 |---------|-------|-------------|
+| `run /stage0` | Haiku | Application overview & architecture |
 | `run /stage1` | Haiku | Service & dependency inventory |
 | `run /stage2` | Haiku | Entry surface extraction |
 | `run /stage3` | - | State & cross-service mapping |
@@ -24,6 +25,7 @@ run /stage1 → run /stage2 → run /stage3 → run /stage4 → run /generate-re
 
 ```
 ai_artifacts/
+├── stage0/overview.md       # application overview
 ├── stage1/services.csv      # with path aliases
 ├── stage1/dependencies.csv
 ├── stage2/entry_points.csv

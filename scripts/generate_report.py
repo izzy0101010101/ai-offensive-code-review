@@ -19,11 +19,20 @@ ARTIFACTS_DIR = Path("ai_artifacts")
 OUTPUT_FILE = ARTIFACTS_DIR / "report.html"
 
 # CSV files
+OVERVIEW_MD = ARTIFACTS_DIR / "stage0" / "overview.md"
 SERVICES_CSV = ARTIFACTS_DIR / "stage1" / "services.csv"
 DEPS_CSV = ARTIFACTS_DIR / "stage1" / "dependencies.csv"
 ENTRY_CSV = ARTIFACTS_DIR / "stage2" / "entry_points.csv"
 STATE_CSV = ARTIFACTS_DIR / "stage3" / "state_and_links.csv"
 FINDINGS_CSV = ARTIFACTS_DIR / "stage4" / "findings.csv"
+
+
+def read_overview():
+    """Read overview markdown file."""
+    if not OVERVIEW_MD.exists():
+        return None
+    with open(OVERVIEW_MD, 'r', encoding='utf-8') as f:
+        return f.read()
 
 
 def read_csv_with_aliases(filepath):
@@ -131,7 +140,70 @@ def esc(text):
     return html.escape(str(text)) if text else ''
 
 
-def generate_html(services, deps, entries, state, findings, aliases):
+def md_to_html(md_text):
+    """Simple markdown to HTML conversion for overview."""
+    if not md_text:
+        return ''
+    lines = md_text.split('\n')
+    html_lines = []
+    in_code = False
+    in_list = False
+
+    for line in lines:
+        # Code blocks
+        if line.strip().startswith('```'):
+            if in_code:
+                html_lines.append('</code></pre>')
+                in_code = False
+            else:
+                html_lines.append('<pre><code>')
+                in_code = True
+            continue
+
+        if in_code:
+            html_lines.append(esc(line))
+            continue
+
+        # Headers
+        if line.startswith('## '):
+            if in_list:
+                html_lines.append('</ul>')
+                in_list = False
+            html_lines.append(f'<h4>{esc(line[3:])}</h4>')
+        elif line.startswith('# '):
+            if in_list:
+                html_lines.append('</ul>')
+                in_list = False
+            html_lines.append(f'<h3>{esc(line[2:])}</h3>')
+        # List items
+        elif line.strip().startswith('- '):
+            if not in_list:
+                html_lines.append('<ul>')
+                in_list = True
+            # Handle bold
+            item = line.strip()[2:]
+            item = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', item)
+            html_lines.append(f'<li>{item}</li>')
+        # Empty line
+        elif not line.strip():
+            if in_list:
+                html_lines.append('</ul>')
+                in_list = False
+        # Regular text
+        else:
+            if in_list:
+                html_lines.append('</ul>')
+                in_list = False
+            text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', esc(line))
+            html_lines.append(f'<p>{text}</p>')
+
+    if in_list:
+        html_lines.append('</ul>')
+
+    return '\n'.join(html_lines)
+
+
+def generate_html(services, deps, entries, state, findings, aliases, overview=None):
     """Generate the full HTML report."""
 
     # Group data by service
@@ -345,6 +417,7 @@ pre {{
 
     <h2>Overview</h2>
     <ul>
+        <li><a href="#app-overview">Application</a></li>
         <li><a href="#executive">Executive Map</a></li>
         <li><a href="#attack-surface">Attack Surface</a></li>
     </ul>
@@ -368,6 +441,17 @@ pre {{
 </nav>
 
 <main>
+''')
+
+    # Application Overview (from stage0)
+    if overview:
+        overview_html = md_to_html(overview)
+        html_parts.append(f'''
+<section id="app-overview">
+<div class="card">
+{overview_html}
+</div>
+</section>
 ''')
 
     # Executive Map
@@ -637,6 +721,9 @@ document.querySelectorAll('.sortable th').forEach((th, idx) => {
 def main():
     print("Reading artifacts...")
 
+    # Read overview
+    overview = read_overview()
+
     # Read CSVs
     aliases, services = read_csv_with_aliases(SERVICES_CSV)
     deps = read_csv(DEPS_CSV)
@@ -644,6 +731,7 @@ def main():
     state = read_csv(STATE_CSV)
     findings = read_csv(FINDINGS_CSV)
 
+    print(f"  Overview: {'yes' if overview else 'no'}")
     print(f"  Services: {len(services)}")
     print(f"  Dependencies: {len(deps)}")
     print(f"  Entry points: {len(entries)}")
@@ -652,7 +740,7 @@ def main():
     print(f"  Path aliases: {len(aliases)}")
 
     print("Generating report...")
-    html = generate_html(services, deps, entries, state, findings, aliases)
+    html = generate_html(services, deps, entries, state, findings, aliases, overview)
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:

@@ -16,12 +16,13 @@ Full offensive code review pipeline.
 
 Run the complete pipeline sequentially:
 
-1. Run `/stage1` on the target repository
-2. Run `/stage2`
-3. Run `/stage3`
-4. Run `/stage4`
-5. Run `python3 scripts/generate_report.py`
+1. Run `/stage0` on the target repository (application overview)
+2. Run `/stage1` (services and dependencies)
+3. Run `/stage2` (entry points)
+4. Run `/stage3` (state and flows)
+5. Run `/stage4` (findings)
+6. Run `python3 scripts/generate_report.py`
 
-Verify each stage's CSV output before proceeding to the next.
+Verify each stage's output before proceeding to the next.
 
 All outputs go to `ai_artifacts/` directory.
