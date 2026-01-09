@@ -485,15 +485,7 @@ pre {{
             elif snippet_err:
                 html_parts.append(f'<p><em>Code snippet unavailable: {esc(snippet_err)}</em></p>')
 
-            html_parts.append('''
-<div class="validation">
-<strong>Human validation required</strong><br>
-• Test with varied inputs for each parameter source<br>
-• Trace data flow to sinks<br>
-• Check authentication/authorization
-</div>
-</div>
-''')
+            html_parts.append('</div>')
 
     html_parts.append('</section>')
 
@@ -501,7 +493,7 @@ pre {{
     html_parts.append('''
 <section id="findings">
 <h2>Hypotheses Catalog</h2>
-<p>All items require human validation. No severity assigned.</p>
+<p>All items require human validation. Verify condition exists, test reachability, confirm preconditions can be met.</p>
 ''')
 
     for svc in svc_names:
@@ -522,14 +514,6 @@ pre {{
 <p><strong>State touched:</strong> {esc(f.get('state_touched', 'none'))}</p>
 <p><strong>Cross-service:</strong> {esc(f.get('cross_svc', 'no'))}</p>
 <p><strong>External dependency:</strong> {esc(f.get('ext_dep', 'no'))}</p>
-
-<div class="validation">
-<strong>Human validation required</strong><br>
-• Verify condition exists in code<br>
-• Test reachability from entry point<br>
-• Confirm preconditions can be met<br>
-• This is benign if: input is validated, auth check exists, or value is static/enum
-</div>
 </div>
 ''')
 
