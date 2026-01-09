@@ -32,23 +32,14 @@ I still believe in manual security testing - but AI can help map what's there so
 
 ## Supported Projects
 
-Works on any codebase Claude can read:
-
-| Language | Status |
-|----------|--------|
-| JavaScript/TypeScript | Tested |
-| Python | Tested |
-| Go | Tested |
-| Java | Tested |
-| C#, Ruby, PHP | Supported |
-| Rust, C/C++, Kotlin, Swift | Supported |
+Works on any language Claude can read - JavaScript, TypeScript, Python, Go, Java, Rust, C#, Ruby, PHP, and more. No language-specific configuration needed.
 
 **Best suited for:**
-- Web applications (REST APIs, GraphQL, web servers)
-- Microservices architectures
-- Backend services with HTTP/queue entry points
+- Web applications with HTTP entry points
+- Microservices and backend APIs
+- Anything with identifiable attack surface (routes, handlers, data flows)
 
-**Token usage:** This pipeline reads a lot of code. Expect significant token usage on large codebases. For cost control, run on specific subdirectories or use individual stages instead of the full pipeline.
+**Token usage:** This pipeline reads code. Large codebases = more tokens. To reduce costs, run on specific subdirectories or use individual stages instead of the full pipeline.
 
 ---
 

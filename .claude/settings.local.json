@@ -10,7 +10,10 @@
       "Bash(python3:*)",
       "Bash(git clone:*)",
       "Bash(wc:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)"
     ]
   }
 }
