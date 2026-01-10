@@ -15,7 +15,7 @@ Attack surface mapping for security testers. Point it at a codebase and get:
 </p>
 
 <p align="center">
-  <a href="examples/juice-shop-report.html">Download example report (Juice Shop)</a> - open locally in browser
+  <a href="examples/juice-shop-report.html" download>Download example report (Juice Shop)</a>
 </p>
 
 ---
@@ -42,8 +42,6 @@ Works on any language Claude can read - JavaScript, TypeScript, Python, Go, Java
 - Web applications with HTTP entry points
 - Microservices and backend APIs
 - Anything with identifiable attack surface (routes, handlers, data flows)
-
-**Token usage:** This pipeline reads a lot of code. Large codebases = more tokens. A full run can take several minutes depending on codebase size. To reduce costs and time, run on specific subdirectories or use individual stages instead of the full pipeline.
 
 ---
 
@@ -155,6 +153,34 @@ ai_artifacts/         # Output directory (gitignored)
 ## Example Attack Path
 
 ![Example Attack Path](screenshots/attack_path.png)
+
+---
+
+## Limitations & FAQ
+
+**How long does it take?**
+Depends on codebase size. Small projects: 2-5 minutes. Large monorepos: 10-20+ minutes.
+
+**How much does it cost?**
+This reads a lot of code. A full run on a medium codebase can use significant tokens. Run on subdirectories or individual stages to reduce costs.
+
+**Does it find all vulnerabilities?**
+No. This is a mapper, not a scanner. It surfaces conditions worth investigating. You validate them.
+
+**What about false positives?**
+Expect them. The tool identifies patterns that *could* be issues. That's why everything requires human validation.
+
+**Can I run on private repos?**
+Yes. Everything runs locally through Claude Code. Your code doesn't leave your machine beyond what Claude Code normally does.
+
+**What if a stage fails?**
+Re-run that stage individually with `run /stageX`. Outputs are overwritten each run.
+
+**What languages work best?**
+Any language Claude can read. Web apps with clear HTTP routes work best. Pure libraries or CLI tools with no network surface give less useful output.
+
+**Why no severity labels?**
+Severity is context-dependent and often misleading. A "critical" SQL injection behind admin auth is different from one on a public endpoint. You decide what matters.
 
 ---
 
