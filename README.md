@@ -150,8 +150,6 @@ ai_artifacts/         # Output directory (gitignored)
 
 - Token-heavy on large codebases
 - Expect false positives - human validation required
-- Works best on web apps with clear HTTP routes
-- Pure libraries or CLI tools give less useful output
 
 ---
 
