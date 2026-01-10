@@ -156,31 +156,12 @@ ai_artifacts/         # Output directory (gitignored)
 
 ---
 
-## Limitations & FAQ
+## Limitations
 
-**How long does it take?**
-Depends on codebase size. Small projects: 2-5 minutes. Large monorepos: 10-20+ minutes.
-
-**How much does it cost?**
-This reads a lot of code. A full run on a medium codebase can use significant tokens. Run on subdirectories or individual stages to reduce costs.
-
-**Does it find all vulnerabilities?**
-No. This is a mapper, not a scanner. It surfaces conditions worth investigating. You validate them.
-
-**What about false positives?**
-Expect them. The tool identifies patterns that *could* be issues. That's why everything requires human validation.
-
-**Can I run on private repos?**
-Yes. Everything runs locally through Claude Code. Your code doesn't leave your machine beyond what Claude Code normally does.
-
-**What if a stage fails?**
-Re-run that stage individually with `run /stageX`. Outputs are overwritten each run.
-
-**What languages work best?**
-Any language Claude can read. Web apps with clear HTTP routes work best. Pure libraries or CLI tools with no network surface give less useful output.
-
-**Why no severity labels?**
-Severity is context-dependent and often misleading. A "critical" SQL injection behind admin auth is different from one on a public endpoint. You decide what matters.
+- Token-heavy on large codebases
+- Expect false positives - human validation required
+- Works best on web apps with clear HTTP routes
+- Pure libraries or CLI tools give less useful output
 
 ---
 
