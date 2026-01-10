@@ -146,16 +146,6 @@ ai_artifacts/         # Output directory (gitignored)
 
 ---
 
-## Example Lead
-
-![Example Lead](screenshots/finding.png)
-
-## Example Attack Path
-
-![Example Attack Path](screenshots/attack_path.png)
-
----
-
 ## Limitations
 
 - Token-heavy on large codebases
