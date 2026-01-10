@@ -14,6 +14,10 @@ Attack surface mapping for security testers. Point it at a codebase and get:
   <img src="screenshots/report.png" width="950px" style="border: 1px solid #30363d; border-radius: 8px;" />
 </p>
 
+<p align="center">
+  <a href="examples/juice-shop-report.html">View example report (Juice Shop)</a>
+</p>
+
 ---
 
 ## Why This Exists
