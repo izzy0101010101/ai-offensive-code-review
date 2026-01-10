@@ -25,6 +25,7 @@ DEPS_CSV = ARTIFACTS_DIR / "stage1" / "dependencies.csv"
 ENTRY_CSV = ARTIFACTS_DIR / "stage2" / "entry_points.csv"
 STATE_CSV = ARTIFACTS_DIR / "stage3" / "state_and_links.csv"
 FINDINGS_CSV = ARTIFACTS_DIR / "stage4" / "findings.csv"
+ATTACKS_MD = ARTIFACTS_DIR / "stage5" / "attack_paths.md"
 
 
 def read_overview():
@@ -32,6 +33,14 @@ def read_overview():
     if not OVERVIEW_MD.exists():
         return None
     with open(OVERVIEW_MD, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+def read_attack_paths():
+    """Read attack paths markdown file."""
+    if not ATTACKS_MD.exists():
+        return None
+    with open(ATTACKS_MD, 'r', encoding='utf-8') as f:
         return f.read()
 
 
@@ -203,7 +212,7 @@ def md_to_html(md_text):
     return '\n'.join(html_lines)
 
 
-def generate_html(services, deps, entries, state, findings, aliases, overview=None):
+def generate_html(services, deps, entries, state, findings, aliases, overview=None, attack_paths=None):
     """Generate the full HTML report."""
 
     # Group data by service
@@ -214,6 +223,10 @@ def generate_html(services, deps, entries, state, findings, aliases, overview=No
     state_by_svc = defaultdict(list)
     for s in state:
         state_by_svc[s.get('svc_name', 'unknown')].append(s)
+
+    # Assign L1, L2, L3... IDs to findings
+    for i, f in enumerate(findings, 1):
+        f['lead_id'] = f'L{i}'
 
     findings_by_svc = defaultdict(list)
     for f in findings:
@@ -239,7 +252,7 @@ def generate_html(services, deps, entries, state, findings, aliases, overview=No
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Security Review Report</title>
+<title>Application Review</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -488,6 +501,10 @@ a.priority-item:hover {{
 .tag-event {{ background: #7E22CE; color: white; }}
 .tag-ipc {{ background: #581C87; color: white; }}
 .tag-condition {{ background: var(--hover); color: var(--text); border: 1px solid var(--border); }}
+.tag-datastore {{ background: #059669; color: white; }}
+.tag-http_call {{ background: #0891B2; color: white; }}
+.tag-sdk_call {{ background: #7C3AED; color: white; }}
+.tag-file_interaction {{ background: #D97706; color: white; }}
 
 /* Tables */
 .table-wrap {{
@@ -955,6 +972,117 @@ footer {{
   margin: 1rem auto;
   max-width: 100%;
 }}
+
+/* Attack paths */
+.attack-card {{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid #DC2626;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}}
+
+.attack-header {{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--hover);
+  border-bottom: 1px solid var(--border);
+}}
+
+.attack-id {{
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #DC2626;
+}}
+
+.attack-title {{
+  font-weight: 600;
+  color: var(--text);
+}}
+
+.attack-confidence {{
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}}
+
+.confidence-high {{
+  background: #DC2626;
+  color: white;
+}}
+
+.confidence-medium {{
+  background: #F59E0B;
+  color: white;
+}}
+
+.attack-body {{
+  padding: 1.25rem;
+}}
+
+.attack-body h4 {{
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 1rem 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}}
+
+.attack-body h4:first-child {{
+  margin-top: 0;
+}}
+
+.attack-flow {{
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+}}
+
+.attack-flow ol {{
+  margin: 0;
+  padding-left: 1.25rem;
+}}
+
+.attack-flow li {{
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--text);
+}}
+
+.attack-evidence {{
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}}
+
+.attack-evidence code {{
+  background: var(--code-inline-bg);
+  color: var(--code-inline-text);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}}
+
+.no-attacks {{
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}}
+
+.no-attacks-icon {{
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}}
 </style>
 </head>
 <body>
@@ -964,6 +1092,7 @@ footer {{
 <nav>
   <ul>
     <li><a href="#app-overview">Overview</a></li>
+    <li><a href="#attack-paths">Attack Paths</a></li>
     <li><a href="#executive">Priority</a></li>
     <li><a href="#attack-surface">Attack Surface</a></li>
     <li><a href="#entries">Entry Points</a></li>
@@ -976,7 +1105,7 @@ footer {{
 <div class="container">
 
 <header>
-  <h1>Security Review Report</h1>
+  <h1>Application Review</h1>
   <p class="timestamp">Generated {timestamp}</p>
 </header>
 
@@ -1003,16 +1132,50 @@ footer {{
 </section>
 ''')
 
+    # Attack Paths (from stage5)
+    html_parts.append('''
+<section id="attack-paths">
+<h2>Attack Paths</h2>
+<p class="desc">Verified attack chains with working POCs. Only includes attacks traceable from entry to impact.</p>
+''')
+
+    if attack_paths and attack_paths.strip():
+        # Count attacks (lines starting with "## A")
+        attack_count = len(re.findall(r'^## A\d+:', attack_paths, re.MULTILINE))
+
+        if attack_count > 0:
+            html_parts.append(f'<p style="margin-bottom: 1.5rem;"><span class="count-badge">{attack_count}</span> verified attack paths</p>')
+
+        # Convert attack paths markdown to styled HTML
+        attacks_html = md_to_html(attack_paths)
+        html_parts.append(f'''
+<div class="card">
+{attacks_html}
+</div>
+''')
+    else:
+        html_parts.append('''
+<div class="no-attacks">
+<div class="no-attacks-icon">✓</div>
+<p><strong>No verified attack paths</strong></p>
+<p>Stage 5 analysis did not identify any complete, exploitable attack chains.<br>
+This could mean defenses are effective or conditions don't lead to exploitable paths.</p>
+</div>
+''')
+
+    html_parts.append('</section>')
+
     html_parts.append(f'''
 <section id="executive">
-<h2>What to Look at First <span class="count-badge">{len(priority_findings)}</span></h2>
+<h2>What to Look at First</h2>
 <p class="desc">Conditions involving command execution, file operations, or external calls with user input.</p>
 ''')
 
     if priority_findings:
         for f in priority_findings[:10]:
-            html_parts.append(f'''<a href="#finding-{slugify(f.get('id', ''))}" class="priority-item searchable" data-search="{esc(f.get('id', ''))} {esc(f.get('condition_type', ''))}">
-<strong>{esc(f.get('id', ''))}</strong><span class="tag tag-condition">{esc(f.get('condition_type', ''))}</span><small>{esc(f.get('svc_name', ''))} → {esc(f.get('entry_point', ''))}</small>
+            lead_id = f.get('lead_id', '')
+            html_parts.append(f'''<a href="#finding-{lead_id.lower()}" class="priority-item searchable" data-search="{esc(lead_id)} {esc(f.get('condition_type', ''))}">
+<strong>{esc(lead_id)}</strong><span class="tag tag-condition">{esc(f.get('condition_type', ''))}</span><small>{esc(f.get('entry_point', ''))}</small>
 </a>
 ''')
     else:
@@ -1094,7 +1257,8 @@ footer {{
             if related:
                 html_parts.append('<p><strong>Related leads:</strong></p><ul>')
                 for f in related:
-                    html_parts.append(f'<li><a href="#finding-{slugify(f.get("id", ""))}">{esc(f.get("id", ""))}</a> - {esc(f.get("condition_type", ""))}</li>')
+                    lead_id = f.get('lead_id', '')
+                    html_parts.append(f'<li><a href="#finding-{lead_id.lower()}">{esc(lead_id)}</a> - {esc(f.get("condition_type", ""))}</li>')
                 html_parts.append('</ul>')
 
             html_parts.append('</div>')
@@ -1167,11 +1331,11 @@ footer {{
         html_parts.append(f'<h3 style="margin: 1.5rem 0 1rem; color: var(--accent);">{esc(svc)}</h3>')
 
         for f in svc_findings:
-            fid = f.get('id', '')
+            lead_id = f.get('lead_id', '')
             html_parts.append(f'''
-<div class="lead-card searchable" id="finding-{slugify(fid)}" data-search="{esc(fid)} {esc(f.get('condition_type', ''))} {esc(f.get('description', ''))}">
+<div class="lead-card searchable" id="finding-{lead_id.lower()}" data-search="{esc(lead_id)} {esc(f.get('condition_type', ''))} {esc(f.get('description', ''))}">
 <div class="lead-header">
-<span class="lead-id">{esc(fid)}</span>
+<span class="lead-id">{esc(lead_id)}</span>
 <span class="tag tag-condition">{esc(f.get('condition_type', ''))}</span>
 </div>
 <div class="lead-body">
@@ -1197,35 +1361,36 @@ footer {{
 
     html_parts.append('</section>')
 
-    # Data Flows
+    # Data Flows - check if any targets exist
+    has_targets = any(s.get('target_func', '').strip() for s in state)
+
     html_parts.append(f'''
 <section id="dataflow">
 <h2>Data Flows <span class="count-badge">{len(state)}</span></h2>
 <p class="desc">How data moves through the application. Database operations, API calls, state mutations.</p>
 <div class="legend">
-<div class="legend-item"><span class="legend-term">Service</span><span class="legend-def">Which microservice or module</span></div>
 <div class="legend-item"><span class="legend-term">Type</span><span class="legend-def">Resource category (DB, API, FILE, CACHE)</span></div>
 <div class="legend-item"><span class="legend-term">Identifier</span><span class="legend-def">Table name, endpoint, or file path</span></div>
-<div class="legend-item"><span class="legend-term">Op</span><span class="legend-def">Operation (READ, WRITE, DELETE, CALL)</span></div>
+<div class="legend-item"><span class="legend-term">Op</span><span class="legend-def">Operation (READ, WRITE, EXECUTE)</span></div>
 <div class="legend-item"><span class="legend-term">Source</span><span class="legend-def">Function initiating the operation</span></div>
-<div class="legend-item"><span class="legend-term">Target</span><span class="legend-def">Destination function or resource</span></div>
+<div class="legend-item"><span class="legend-term">Data</span><span class="legend-def">Fields or parameters involved</span></div>
 </div>
 <div class="table-wrap">
 <table class="sortable">
 <thead>
-<tr><th>Service</th><th>Type</th><th>Identifier</th><th>Op</th><th>Source</th><th>Target</th></tr>
+<tr><th>Type</th><th>Identifier</th><th>Op</th><th>Source</th><th>Data Elements</th></tr>
 </thead>
 <tbody>
 ''')
 
     for s in state:
+        data_elem = s.get('data_elements', '').replace(';', ', ').replace('|', ', ')
         html_parts.append(f'''<tr class="searchable" data-search="{esc(s.get('identifier', ''))} {esc(s.get('src_func', ''))}">
-<td>{esc(s.get('svc_name', ''))}</td>
-<td>{esc(s.get('artifact_type', ''))}</td>
+<td><span class="tag tag-{s.get('artifact_type', 'unknown').lower()}">{esc(s.get('artifact_type', ''))}</span></td>
 <td><code>{esc(s.get('identifier', ''))}</code></td>
 <td>{esc(s.get('op', ''))}</td>
 <td><code>{esc(s.get('src_func', ''))}</code></td>
-<td><code>{esc(s.get('target_func', ''))}</code></td>
+<td>{esc(data_elem) if data_elem else '-'}</td>
 </tr>
 ''')
 
@@ -1345,6 +1510,9 @@ def main():
     # Read overview
     overview = read_overview()
 
+    # Read attack paths
+    attack_paths = read_attack_paths()
+
     # Read CSVs
     aliases, services = read_csv_with_aliases(SERVICES_CSV)
     deps = read_csv(DEPS_CSV)
@@ -1353,6 +1521,7 @@ def main():
     findings = read_csv(FINDINGS_CSV)
 
     print(f"  Overview: {'yes' if overview else 'no'}")
+    print(f"  Attack paths: {'yes' if attack_paths else 'no'}")
     print(f"  Services: {len(services)}")
     print(f"  Dependencies: {len(deps)}")
     print(f"  Entry points: {len(entries)}")
@@ -1361,7 +1530,7 @@ def main():
     print(f"  Path aliases: {len(aliases)}")
 
     print("Generating report...")
-    html = generate_html(services, deps, entries, state, findings, aliases, overview)
+    html = generate_html(services, deps, entries, state, findings, aliases, overview, attack_paths)
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:

@@ -7,7 +7,7 @@ run /offensive-review /path/to/target/repo
 
 Or run stages individually:
 ```
-run /stage0 → run /stage1 → run /stage2 → run /stage3 → run /stage4 → run /generate-report
+run /stage0 → run /stage1 → run /stage2 → run /stage3 → run /stage4 → run /stage5 → run /generate-report
 ```
 
 ## Commands
@@ -19,6 +19,7 @@ run /stage0 → run /stage1 → run /stage2 → run /stage3 → run /stage4 → 
 | `run /stage2` | Haiku | Entry surface extraction |
 | `run /stage3` | - | State & cross-service mapping |
 | `run /stage4` | - | Condition identification |
+| `run /stage5` | - | Attack paths with POCs |
 | `run /generate-report` | - | Run `python3 scripts/generate_report.py` |
 
 ## Output
@@ -31,6 +32,7 @@ ai_artifacts/
 ├── stage2/entry_points.csv
 ├── stage3/state_and_links.csv
 ├── stage4/findings.csv
+├── stage5/attack_paths.md   # POCs and attack chains
 └── report.html
 ```
 

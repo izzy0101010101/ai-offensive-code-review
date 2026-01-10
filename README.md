@@ -7,7 +7,7 @@ Attack surface mapping for security testers. Point it at a codebase and get:
 </p>
 
 <p align="center">
-<b>Service inventory</b> · <b>Attack surface map</b> · <b>Data flow analysis</b> · <b>Security conditions</b>
+<b>Service inventory</b> · <b>Attack surface map</b> · <b>Data flow analysis</b> · <b>Security conditions</b> · <b>Attack POCs</b>
 </p>
 
 <p align="center">
@@ -62,21 +62,21 @@ That's it. Wait for the pipeline to complete and open `ai_artifacts/report.html`
 ## Pipeline Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    run /offensive-review                        │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Stage 0   │───▶│   Stage 1   │───▶│   Stage 2   │───▶│   Stage 3   │───▶│   Stage 4   │
-│  Overview   │    │  Services   │    │   Entry     │    │   State &   │    │  Findings   │
-│ & Diagram   │    │   & Deps    │    │   Points    │    │   Flows     │    │  (Leads)    │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-                                               │
-                                               ▼
-                                     ┌─────────────────┐
-                                     │  report.html    │
-                                     └─────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│                              run /offensive-review                                    │
+└──────────────────────────────────────────────────────────────────────────────────────┘
+                                          │
+                                          ▼
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
+│ Stage 0  │──▶│ Stage 1  │──▶│ Stage 2  │──▶│ Stage 3  │──▶│ Stage 4  │──▶│ Stage 5  │
+│ Overview │   │ Services │   │  Entry   │   │  State & │   │ Findings │   │  Attack  │
+│          │   │  & Deps  │   │  Points  │   │  Flows   │   │ (Leads)  │   │   POCs   │
+└──────────┘   └──────────┘   └──────────┘   └──────────┘   └──────────┘   └──────────┘
+                                                                                │
+                                                                                ▼
+                                                                      ┌─────────────────┐
+                                                                      │  report.html    │
+                                                                      └─────────────────┘
 ```
 
 ---
@@ -90,7 +90,8 @@ That's it. Wait for the pipeline to complete and open `ai_artifacts/report.html`
 | `run /stage2` | Extract entry points (HTTP, queues, SDK) |
 | `run /stage3` | Map state mutations and cross-service calls |
 | `run /stage4` | Identify conditions requiring validation |
-| `run /generate-report` | Generate HTML report from CSVs |
+| `run /stage5` | Generate attack paths with code-specific POCs |
+| `run /generate-report` | Generate HTML report from all artifacts |
 
 ---
 
@@ -109,6 +110,8 @@ ai_artifacts/
 │   └── state_and_links.csv # State operations & cross-service links
 ├── stage4/
 │   └── findings.csv        # Conditions for human validation
+├── stage5/
+│   └── attack_paths.md     # Verified attack chains with POCs
 └── report.html             # Interactive HTML report
 ```
 
@@ -117,9 +120,9 @@ ai_artifacts/
 ## Project Structure
 
 ```
-.claude/skills/       # Pipeline commands (stage1-4, offensive-review, generate-report)
+.claude/skills/       # Pipeline commands (stage0-5, offensive-review, generate-report)
 scripts/
-├── generate_report.py   # Builds HTML report from CSVs
+├── generate_report.py   # Builds HTML report from all artifacts
 ├── validate-csv.sh      # Validates CSV structure
 └── init-review.sh       # Creates ai_artifacts directories
 ai_artifacts/         # Output directory (gitignored)
@@ -170,7 +173,7 @@ Findings use these condition types (not severity labels):
 This repo includes pre-configured permissions in `.claude/settings.local.json` so the pipeline runs without constant approval prompts.
 
 Included permissions:
-- All pipeline skills (stage1-4, offensive-review, generate-report)
+- All pipeline skills (stage0-5, offensive-review, generate-report)
 - `python3` for report generation
 - `git clone` for cloning target repos
 

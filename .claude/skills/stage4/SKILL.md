@@ -52,6 +52,7 @@ Rules:
 - No remediation.
 - human_validation always = yes.
 - Forbidden words: critical, high, medium, low, severe, exploitable, impact.
+- Order findings by danger: SUBPROCESS_EXEC, DANGEROUS_PRIMITIVE, SSRF, TEMPLATE_INJECTION, FILE_INTERACTION, PATH_TRAVERSAL first. INFO_DISCLOSURE, SENSITIVE_LOGGING last.
 - CSV only.
 - Overwrite.
 - Stop.

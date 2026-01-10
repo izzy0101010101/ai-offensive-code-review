@@ -21,7 +21,8 @@ Run the complete pipeline sequentially:
 3. Run `/stage2` (entry points)
 4. Run `/stage3` (state and flows)
 5. Run `/stage4` (findings)
-6. Run `python3 scripts/generate_report.py`
+6. Run `/stage5` (attack paths with POCs)
+7. Run `python3 scripts/generate_report.py`
 
 Verify each stage's output before proceeding to the next.
 
