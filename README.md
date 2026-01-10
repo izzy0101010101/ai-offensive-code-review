@@ -168,13 +168,7 @@ To customize, edit `.claude/settings.local.json` or see the [Claude Code documen
 
 ## Philosophy
 
-- **Mapper, not scanner** - Shows you where to look, doesn't claim exploitability
-- **Leads, not verdicts** - AI identifies conditions, humans validate
-- **No security theater** - No "CRITICAL" labels or impact scores
-- **Evidence-based** - Every finding links to specific code locations
-- **Transparent** - CSV outputs are auditable, not black-box
-
-This is a reconnaissance tool. You still do the actual security testing.
+This maps attack surface and gives you leads. It doesn't claim exploitability or assign severity - you validate the findings yourself.
 
 ---
 
