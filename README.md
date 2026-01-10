@@ -39,7 +39,7 @@ Works on any language Claude can read - JavaScript, TypeScript, Python, Go, Java
 - Microservices and backend APIs
 - Anything with identifiable attack surface (routes, handlers, data flows)
 
-**Token usage:** This pipeline reads code. Large codebases = more tokens. To reduce costs, run on specific subdirectories or use individual stages instead of the full pipeline.
+**Token usage:** This pipeline reads a lot of code. Large codebases = more tokens. A full run can take several minutes depending on codebase size. To reduce costs and time, run on specific subdirectories or use individual stages instead of the full pipeline.
 
 ---
 
