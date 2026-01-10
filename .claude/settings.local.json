@@ -7,6 +7,7 @@
       "Skill(stage2)",
       "Skill(stage3)",
       "Skill(stage4)",
+      "Skill(stage5)",
       "Skill(generate-report)",
       "Bash(python3:*)",
       "Bash(git clone:*)",

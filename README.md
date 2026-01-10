@@ -165,6 +165,9 @@ Findings use these condition types (not severity labels):
 
 ![Example Finding](screenshots/finding.png)
 
+## Example Attack Path
+
+![Example Attack Path](screenshots/attack_path.png)
 
 ---
 

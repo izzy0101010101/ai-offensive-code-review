@@ -87,7 +87,6 @@ For validated attacks only, write:
 
 **Target:** [endpoint]
 **Type:** [e.g., SQL Injection, XSS, IDOR]
-**Confidence:** HIGH | MEDIUM (no LOW - if low confidence, delete it)
 
 ### Attack Flow
 1. Attacker does X at [entry point]
@@ -176,9 +175,9 @@ A1 → A3 → A5: [description of combined attack]
 
 ## Summary
 
-| ID | Attack | Entry Point | Impact | Confidence |
-|----|--------|-------------|--------|------------|
-| A1 | ... | ... | ... | HIGH |
+| ID | Attack | Entry Point | Impact |
+|----|--------|-------------|--------|
+| A1 | ... | ... | ... |
 
 ## Not Exploitable
 

@@ -44,6 +44,80 @@ def read_attack_paths():
         return f.read()
 
 
+def parse_attack_paths(md_content):
+    """Parse attack paths markdown into structured data."""
+    if not md_content:
+        return []
+
+    attacks = []
+    current_attack = None
+    current_section = None
+
+    lines = md_content.split('\n')
+
+    for line in lines:
+        # New attack starts with ## A1:, ## A2:, etc.
+        attack_match = re.match(r'^## (A\d+):\s*(.+)$', line)
+        if attack_match:
+            if current_attack:
+                attacks.append(current_attack)
+            current_attack = {
+                'id': attack_match.group(1),
+                'name': attack_match.group(2),
+                'target': '',
+                'type': '',
+                'confidence': '',
+                'flow': [],
+                'poc': '',
+                'expected': '',
+                'evidence': [],
+                'chain': ''
+            }
+            current_section = None
+            continue
+
+        if not current_attack:
+            continue
+
+        # Parse metadata
+        if line.startswith('**Target:**'):
+            current_attack['target'] = line.replace('**Target:**', '').strip()
+        elif line.startswith('**Type:**'):
+            current_attack['type'] = line.replace('**Type:**', '').strip()
+        elif line.startswith('**Confidence:**'):
+            current_attack['confidence'] = line.replace('**Confidence:**', '').strip()
+        elif line.startswith('**Expected Result:**'):
+            current_attack['expected'] = line.replace('**Expected Result:**', '').strip()
+
+        # Section headers
+        elif '### Attack Flow' in line:
+            current_section = 'flow'
+        elif '### POC' in line:
+            current_section = 'poc'
+        elif '### Code Evidence' in line:
+            current_section = 'evidence'
+        elif '### Chain Potential' in line:
+            current_section = 'chain'
+        elif line.startswith('### ') or line.startswith('## '):
+            current_section = None
+
+        # Content within sections
+        elif current_section == 'flow' and re.match(r'^\d+\.', line.strip()):
+            current_attack['flow'].append(line.strip())
+        elif current_section == 'poc':
+            if line.strip() and not line.startswith('```'):
+                current_attack['poc'] += line + '\n'
+        elif current_section == 'evidence' and line.strip().startswith('-'):
+            current_attack['evidence'].append(line.strip()[1:].strip())
+        elif current_section == 'chain' and line.strip():
+            current_attack['chain'] += line.strip() + ' '
+
+    if current_attack:
+        attacks.append(current_attack)
+
+    return attacks
+
+
 def read_csv_with_aliases(filepath):
     """Read CSV, extracting path aliases from comment lines."""
     aliases = {}
@@ -1083,6 +1157,144 @@ footer {{
   font-size: 3rem;
   margin-bottom: 1rem;
 }}
+
+/* Attack Cards */
+.attack-card {{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}}
+
+.attack-header {{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}}
+
+.attack-id {{
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: var(--hover);
+  color: var(--accent);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+}}
+
+.attack-name {{
+  flex: 1;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+}}
+
+
+.attack-body {{
+  padding: 1.5rem;
+}}
+
+.attack-body .label {{
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}}
+
+.attack-meta {{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}}
+
+.attack-meta-item code {{
+  background: var(--code-inline-bg);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}}
+
+.attack-flow {{
+  margin-bottom: 1.5rem;
+}}
+
+.attack-flow ol {{
+  margin: 0;
+  padding-left: 1.5rem;
+}}
+
+.attack-flow li {{
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--text);
+}}
+
+.attack-poc {{
+  margin-bottom: 1.5rem;
+}}
+
+.attack-poc pre {{
+  margin-top: 0.5rem;
+}}
+
+.attack-expected {{
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(220, 38, 38, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #DC2626;
+}}
+
+.attack-expected p {{
+  margin: 0;
+  font-size: 0.9rem;
+}}
+
+.attack-evidence {{
+  margin-bottom: 1.5rem;
+}}
+
+.attack-evidence ul {{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}}
+
+.attack-evidence li {{
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}}
+
+.attack-evidence li:last-child {{
+  border-bottom: none;
+}}
+
+.attack-evidence code {{
+  background: var(--code-inline-bg);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}}
+
+.attack-chain {{
+  padding: 1rem;
+  background: var(--hover);
+  border-radius: 8px;
+}}
+
+.attack-chain p {{
+  margin: 0;
+  font-size: 0.9rem;
+}}
 </style>
 </head>
 <body>
@@ -1092,13 +1304,13 @@ footer {{
 <nav>
   <ul>
     <li><a href="#app-overview">Overview</a></li>
-    <li><a href="#attack-paths">Attack Paths</a></li>
     <li><a href="#executive">Priority</a></li>
     <li><a href="#attack-surface">Attack Surface</a></li>
     <li><a href="#entries">Entry Points</a></li>
     <li><a href="#findings">Leads</a></li>
     <li><a href="#dataflow">Data Flows</a></li>
     <li><a href="#deps">Dependencies</a></li>
+    <li><a href="#attack-paths">Attack Paths</a></li>
   </ul>
 </nav>
 
@@ -1132,38 +1344,6 @@ footer {{
 </section>
 ''')
 
-    # Attack Paths (from stage5)
-    html_parts.append('''
-<section id="attack-paths">
-<h2>Attack Paths</h2>
-<p class="desc">Verified attack chains with working POCs. Only includes attacks traceable from entry to impact.</p>
-''')
-
-    if attack_paths and attack_paths.strip():
-        # Count attacks (lines starting with "## A")
-        attack_count = len(re.findall(r'^## A\d+:', attack_paths, re.MULTILINE))
-
-        if attack_count > 0:
-            html_parts.append(f'<p style="margin-bottom: 1.5rem;"><span class="count-badge">{attack_count}</span> verified attack paths</p>')
-
-        # Convert attack paths markdown to styled HTML
-        attacks_html = md_to_html(attack_paths)
-        html_parts.append(f'''
-<div class="card">
-{attacks_html}
-</div>
-''')
-    else:
-        html_parts.append('''
-<div class="no-attacks">
-<div class="no-attacks-icon">✓</div>
-<p><strong>No verified attack paths</strong></p>
-<p>Stage 5 analysis did not identify any complete, exploitable attack chains.<br>
-This could mean defenses are effective or conditions don't lead to exploitable paths.</p>
-</div>
-''')
-
-    html_parts.append('</section>')
 
     html_parts.append(f'''
 <section id="executive">
@@ -1431,6 +1611,84 @@ This could mean defenses are effective or conditions don't lead to exploitable p
 </tr>
 ''')
         html_parts.append('</tbody></table></div></div>')
+
+    html_parts.append('</section>')
+
+    # Attack Paths (from stage5) - at the end
+    parsed_attacks = parse_attack_paths(attack_paths) if attack_paths else []
+
+    html_parts.append(f'''
+<section id="attack-paths">
+<h2>Attack Paths <span class="count-badge">{len(parsed_attacks)}</span></h2>
+<p class="desc">Verified attack chains with working POCs. These are complete paths from entry to impact.</p>
+''')
+
+    if parsed_attacks:
+        # Summary table first
+        html_parts.append('''
+<div class="table-wrap" style="margin-bottom: 2rem;">
+<table>
+<thead><tr><th>ID</th><th>Attack</th><th>Target</th><th>Type</th></tr></thead>
+<tbody>
+''')
+        for attack in parsed_attacks:
+            html_parts.append(f'''<tr>
+<td><a href="#attack-{attack['id'].lower()}"><strong>{esc(attack['id'])}</strong></a></td>
+<td>{esc(attack['name'])}</td>
+<td><code>{esc(attack['target'])}</code></td>
+<td>{esc(attack['type'])}</td>
+</tr>
+''')
+        html_parts.append('</tbody></table></div>')
+
+        # Then individual cards
+        for attack in parsed_attacks:
+            html_parts.append(f'''
+<div class="attack-card" id="attack-{attack['id'].lower()}">
+<div class="attack-header">
+<span class="attack-id">{esc(attack['id'])}</span>
+<span class="attack-name">{esc(attack['name'])}</span>
+</div>
+<div class="attack-body">
+<div class="attack-meta">
+<div class="attack-meta-item"><span class="label">Target</span><code>{esc(attack['target'])}</code></div>
+<div class="attack-meta-item"><span class="label">Type</span><span>{esc(attack['type'])}</span></div>
+</div>
+''')
+            if attack['flow']:
+                html_parts.append('<div class="attack-flow"><span class="label">Attack Flow</span><ol>')
+                for step in attack['flow']:
+                    step_text = re.sub(r'^\d+\.\s*', '', step)
+                    html_parts.append(f'<li>{esc(step_text)}</li>')
+                html_parts.append('</ol></div>')
+
+            if attack['poc'].strip():
+                html_parts.append(f'''
+<div class="attack-poc">
+<span class="label">POC</span>
+<div class="code-wrapper"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>{esc(attack['poc'].strip())}</code></pre></div>
+</div>
+''')
+            if attack['expected']:
+                html_parts.append(f'<div class="attack-expected"><span class="label">Expected Result</span><p>{esc(attack["expected"])}</p></div>')
+
+            if attack['evidence']:
+                html_parts.append('<div class="attack-evidence"><span class="label">Code Evidence</span><ul>')
+                for ev in attack['evidence']:
+                    html_parts.append(f'<li><code>{esc(ev)}</code></li>')
+                html_parts.append('</ul></div>')
+
+            if attack['chain'].strip():
+                html_parts.append(f'<div class="attack-chain"><span class="label">Chain Potential</span><p>{esc(attack["chain"].strip())}</p></div>')
+
+            html_parts.append('</div></div>')
+    else:
+        html_parts.append('''
+<div class="no-attacks">
+<p>No verified attack paths identified.</p>
+<p class="desc">Stage 5 analysis did not find complete, exploitable attack chains. This could mean defenses are effective or conditions don't lead to exploitable paths.</p>
+</div>
+''')
 
     html_parts.append('</section>')
 
