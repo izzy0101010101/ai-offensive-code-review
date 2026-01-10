@@ -15,7 +15,7 @@ Attack surface mapping for security testers. Point it at a codebase and get:
 </p>
 
 <p align="center">
-  <a href="examples/juice-shop-report.html">View example report (Juice Shop)</a>
+  <a href="examples/juice-shop-report.html">Download example report (Juice Shop)</a> - open locally in browser
 </p>
 
 ---
