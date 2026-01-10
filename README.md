@@ -161,9 +161,23 @@ Findings use these condition types (not severity labels):
 
 ---
 
-## Example Finding
+## Report Sections
 
-![Example Finding](screenshots/finding.png)
+| Section | What It Shows |
+|---------|---------------|
+| **Overview** | Application summary and architecture diagram |
+| **Services** | Identified services/modules with entry files and build commands |
+| **Entry Points** | HTTP routes, queues, WebSockets, SDK methods - your attack surface |
+| **Data Flows** | State mutations, DB writes, cross-service calls - where data goes |
+| **Leads** | Conditions worth investigating with preconditions and code locations |
+| **Attack Paths** | Traced attack chains with working POCs based on actual code |
+| **Dependencies** | External libraries and versions per service |
+
+---
+
+## Example Lead
+
+![Example Lead](screenshots/finding.png)
 
 ## Example Attack Path
 
