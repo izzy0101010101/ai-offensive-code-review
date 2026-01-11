@@ -46,6 +46,13 @@ condition_type (use the most specific one):
 | INFO_DISCLOSURE | Stack traces, debug info exposed |
 | RACE_CONDITION | TOCTOU, concurrent state access |
 
+Path Coverage:
+- When a dangerous sink is identified, find ALL code paths that reach it.
+- Verify security controls exist on EACH path independently.
+- Finding controls on one path does NOT clear other paths.
+- Search for TODO/FIXME comments near security-critical code.
+- Flag empty or stub functions in validation logic.
+
 Rules:
 - Conditions only, not vulnerabilities.
 - No severity/impact/likelihood/exploitability.

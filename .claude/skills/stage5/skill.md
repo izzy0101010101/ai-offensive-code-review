@@ -75,8 +75,14 @@ For EACH attack path, ask yourself:
 3. Would the attacker get stuck somewhere?
 4. Does this actually reach a meaningful impact?
 5. Am I hallucinating or is this based on real code?
+6. Did I verify ALL paths to this sink, not just one?
 
 If ANY answer is uncertain → DELETE the attack path.
+
+Before concluding "not exploitable due to validation":
+- Confirm validation is applied on the SPECIFIC path being analyzed.
+- Do not assume sibling implementations share the same controls.
+- Incomplete implementations (TODO stubs) are findings, not assumptions of safety.
 
 ### Step 5: Write POCs
 
