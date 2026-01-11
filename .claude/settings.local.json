@@ -16,8 +16,7 @@
       "Bash(grep:*)",
       "Bash(cat:*)",
       "Bash(find:*)",
-      "Bash(open:*)",
-      "WebFetch(domain:github.com)"
+      "Bash(open:*)"
     ]
   }
 }
