@@ -12,7 +12,6 @@
       "Bash(python3:*)",
       "Bash(wc:*)",
       "Bash(mkdir:*)",
-      "Bash(git add:*)",
       "Bash(grep:*)",
       "Bash(cat:*)",
       "Bash(find:*)",
